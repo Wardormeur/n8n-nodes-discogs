@@ -1,0 +1,52 @@
+{
+	"id": "discogsFixtureAll2",
+	"name": "Discogs fixture: return all",
+	"nodes": [
+		{
+			"id": "s",
+			"name": "Start",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [
+				0,
+				0
+			],
+			"parameters": {}
+		},
+		{
+			"id": "r",
+			"name": "Release: Search (Return All)",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				300,
+				0
+			],
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"parameters": {
+				"resource": "release",
+				"operation": "search",
+				"filters": {
+					"artist": "Daft Punk",
+					"country": "France"
+				},
+				"returnAll": true
+			}
+		}
+	],
+	"connections": {
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Release: Search (Return All)",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	}
+}

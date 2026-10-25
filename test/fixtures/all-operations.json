@@ -1,0 +1,1529 @@
+{
+	"id": "discogsFixtureAll1",
+	"name": "Discogs fixture: all operations",
+	"nodes": [
+		{
+			"id": "start",
+			"name": "Start",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [
+				0,
+				0
+			],
+			"parameters": {}
+		},
+		{
+			"id": "s0",
+			"name": "Release: Get by URL",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				440,
+				0
+			],
+			"parameters": {
+				"resource": "release",
+				"operation": "get",
+				"releaseId": {
+					"__rl": true,
+					"mode": "url",
+					"value": "https://www.discogs.com/release/249504-Rick-Astley-Never-Gonna-Give-You-Up"
+				},
+				"options": {
+					"currency": "EUR"
+				}
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c0",
+			"name": "Check: Release: Get by URL",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				660,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c0c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 1) && (items[0].id === 249504))($('Release: Get by URL').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f0",
+			"name": "Failed: Release: Get by URL",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				660,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Release: Get by URL: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 1 item(s)\", (items.length === 1)], [\"id is 249504\", (items[0].id === 249504)]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Release: Get by URL').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w1",
+			"name": "Wait before Release: Search",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				770,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s1",
+			"name": "Release: Search",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				880,
+				0
+			],
+			"parameters": {
+				"resource": "release",
+				"operation": "search",
+				"query": "Never Gonna Give You Up",
+				"filters": {
+					"artist": "Rick Astley",
+					"format": "Vinyl"
+				},
+				"limit": 3
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c1",
+			"name": "Check: Release: Search",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				1100,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c1c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 3) && (items.every((j) => [\"id\",\"title\"].every((k) => k in j))))($('Release: Search').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f1",
+			"name": "Failed: Release: Search",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				1100,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Release: Search: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 3 item(s)\", (items.length === 3)], [\"keys id, title\", (items.every((j) => [\"id\",\"title\"].every((k) => k in j)))]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Release: Search').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w2",
+			"name": "Wait before Master: Get by ID",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				1210,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s2",
+			"name": "Master: Get by ID",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				1320,
+				0
+			],
+			"parameters": {
+				"resource": "master",
+				"operation": "get",
+				"masterId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "96559"
+				}
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c2",
+			"name": "Check: Master: Get by ID",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				1540,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c2c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 1) && (items[0].id === 96559))($('Master: Get by ID').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f2",
+			"name": "Failed: Master: Get by ID",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				1540,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Master: Get by ID: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 1 item(s)\", (items.length === 1)], [\"id is 96559\", (items[0].id === 96559)]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Master: Get by ID').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w3",
+			"name": "Wait before Master: Get Versions",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				1650,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s3",
+			"name": "Master: Get Versions",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				1760,
+				0
+			],
+			"parameters": {
+				"resource": "master",
+				"operation": "getVersions",
+				"masterId": {
+					"__rl": true,
+					"mode": "url",
+					"value": "https://www.discogs.com/master/96559-Rick-Astley-Never-Gonna-Give-You-Up?type=Release"
+				},
+				"limit": 3,
+				"options": {
+					"sort": "released",
+					"sortOrder": "desc"
+				}
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c3",
+			"name": "Check: Master: Get Versions",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				1980,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c3c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 3) && (items.every((j) => [\"id\",\"title\"].every((k) => k in j))))($('Master: Get Versions').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f3",
+			"name": "Failed: Master: Get Versions",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				1980,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Master: Get Versions: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 3 item(s)\", (items.length === 3)], [\"keys id, title\", (items.every((j) => [\"id\",\"title\"].every((k) => k in j)))]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Master: Get Versions').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w4",
+			"name": "Wait before Master: Search",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				2090,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s4",
+			"name": "Master: Search",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				2200,
+				0
+			],
+			"parameters": {
+				"resource": "master",
+				"operation": "search",
+				"query": "Whenever You Need Somebody",
+				"limit": 2
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c4",
+			"name": "Check: Master: Search",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				2420,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c4c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 2))($('Master: Search').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f4",
+			"name": "Failed: Master: Search",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				2420,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Master: Search: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 2 item(s)\", (items.length === 2)]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Master: Search').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w5",
+			"name": "Wait before Artist: Get by URL",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				2530,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s5",
+			"name": "Artist: Get by URL",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				2640,
+				0
+			],
+			"parameters": {
+				"resource": "artist",
+				"operation": "get",
+				"artistId": {
+					"__rl": true,
+					"mode": "url",
+					"value": "https://www.discogs.com/fr/artist/72872-Rick-Astley"
+				}
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c5",
+			"name": "Check: Artist: Get by URL",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				2860,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c5c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 1) && (items[0].id === 72872))($('Artist: Get by URL').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f5",
+			"name": "Failed: Artist: Get by URL",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				2860,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Artist: Get by URL: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 1 item(s)\", (items.length === 1)], [\"id is 72872\", (items[0].id === 72872)]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Artist: Get by URL').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w6",
+			"name": "Wait before Artist: Get Releases",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				2970,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s6",
+			"name": "Artist: Get Releases",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				3080,
+				0
+			],
+			"parameters": {
+				"resource": "artist",
+				"operation": "getReleases",
+				"artistId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "72872"
+				},
+				"limit": 3,
+				"options": {
+					"sort": "year",
+					"sortOrder": "asc"
+				}
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c6",
+			"name": "Check: Artist: Get Releases",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				3300,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c6c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 3) && (items.every((j, k) => k === 0 || (items[k - 1].year ?? 0) <= (j.year ?? 0))))($('Artist: Get Releases').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f6",
+			"name": "Failed: Artist: Get Releases",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				3300,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Artist: Get Releases: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 3 item(s)\", (items.length === 3)], [\"sorted by year\", (items.every((j, k) => k === 0 || (items[k - 1].year ?? 0) <= (j.year ?? 0)))]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Artist: Get Releases').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w7",
+			"name": "Wait before Artist: Search",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				3410,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s7",
+			"name": "Artist: Search",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				3520,
+				0
+			],
+			"parameters": {
+				"resource": "artist",
+				"operation": "search",
+				"query": "Rick Astley",
+				"limit": 2,
+				"output": "fields",
+				"fields": [
+					"title"
+				]
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c7",
+			"name": "Check: Artist: Search",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				3740,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c7c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 2) && (items.every((j) => Object.keys(j).every((k) => [\"id\",\"title\"].includes(k)))))($('Artist: Search').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f7",
+			"name": "Failed: Artist: Search",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				3740,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Artist: Search: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 2 item(s)\", (items.length === 2)], [\"only keys id, title\", (items.every((j) => Object.keys(j).every((k) => [\"id\",\"title\"].includes(k))))]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Artist: Search').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w8",
+			"name": "Wait before Label: Get",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				3850,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s8",
+			"name": "Label: Get",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				3960,
+				0
+			],
+			"parameters": {
+				"resource": "label",
+				"operation": "get",
+				"labelId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "895"
+				},
+				"output": "fields",
+				"fields": [
+					"name",
+					"profile"
+				]
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c8",
+			"name": "Check: Label: Get",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				4180,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c8c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 1) && (items.every((j) => Object.keys(j).every((k) => [\"id\",\"name\",\"profile\"].includes(k)))))($('Label: Get').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f8",
+			"name": "Failed: Label: Get",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				4180,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Label: Get: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 1 item(s)\", (items.length === 1)], [\"only keys id, name, profile\", (items.every((j) => Object.keys(j).every((k) => [\"id\",\"name\",\"profile\"].includes(k))))]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Label: Get').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w9",
+			"name": "Wait before Label: Get Releases",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				4290,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s9",
+			"name": "Label: Get Releases",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				4400,
+				0
+			],
+			"parameters": {
+				"resource": "label",
+				"operation": "getReleases",
+				"labelId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "895"
+				},
+				"limit": 2,
+				"output": "raw"
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c9",
+			"name": "Check: Label: Get Releases",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				4620,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c9c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 2))($('Label: Get Releases').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f9",
+			"name": "Failed: Label: Get Releases",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				4620,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Label: Get Releases: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 2 item(s)\", (items.length === 2)]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Label: Get Releases').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w10",
+			"name": "Wait before Label: Search",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				4730,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s10",
+			"name": "Label: Search",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				4840,
+				0
+			],
+			"parameters": {
+				"resource": "label",
+				"operation": "search",
+				"query": "RCA",
+				"limit": 2
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c10",
+			"name": "Check: Label: Search",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				5060,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c10c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 2))($('Label: Search').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f10",
+			"name": "Failed: Label: Search",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				5060,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Label: Search: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 2 item(s)\", (items.length === 2)]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Label: Search').all().map((i) => i.json)) }}"
+			}
+		},
+		{
+			"id": "w11",
+			"name": "Wait before Marketplace: Release Stats",
+			"type": "n8n-nodes-base.wait",
+			"typeVersion": 1.1,
+			"position": [
+				5170,
+				-200
+			],
+			"executeOnce": true,
+			"parameters": {
+				"amount": 1.5
+			}
+		},
+		{
+			"id": "s11",
+			"name": "Marketplace: Release Stats",
+			"type": "CUSTOM.discogs",
+			"typeVersion": 1,
+			"position": [
+				5280,
+				0
+			],
+			"parameters": {
+				"resource": "marketplace",
+				"operation": "getReleaseStats",
+				"releaseId": {
+					"__rl": true,
+					"mode": "id",
+					"value": "249504"
+				},
+				"currency": "EUR"
+			},
+			"credentials": {
+				"discogsApi": "auto"
+			},
+			"executeOnce": true,
+			"alwaysOutputData": true
+		},
+		{
+			"id": "c11",
+			"name": "Check: Marketplace: Release Stats",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.3,
+			"position": [
+				5500,
+				0
+			],
+			"executeOnce": true,
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict",
+						"version": 3
+					},
+					"conditions": [
+						{
+							"id": "c11c",
+							"leftValue": "={{ ((items) => (items.every((j) => !j.error)) && (items.length === 1) && (items.every((j) => [\"num_for_sale\"].every((k) => k in j))))($('Marketplace: Release Stats').all().map((i) => i.json)) }}",
+							"rightValue": "",
+							"operator": {
+								"type": "boolean",
+								"operation": "true",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			}
+		},
+		{
+			"id": "f11",
+			"name": "Failed: Marketplace: Release Stats",
+			"type": "n8n-nodes-base.stopAndError",
+			"typeVersion": 1,
+			"position": [
+				5500,
+				200
+			],
+			"parameters": {
+				"errorMessage": "={{ ((items) => \"Marketplace: Release Stats: expected \" + [[\"no error\", (items.every((j) => !j.error))], [\"exactly 1 item(s)\", (items.length === 1)], [\"keys num_for_sale\", (items.every((j) => [\"num_for_sale\"].every((k) => k in j)))]].filter((pair) => !pair[1]).map((pair) => pair[0]).join(', ') + '; got ' + JSON.stringify(items).slice(0, 400))($('Marketplace: Release Stats').all().map((i) => i.json)) }}"
+			}
+		}
+	],
+	"connections": {
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Release: Get by URL",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Release: Get by URL": {
+			"main": [
+				[
+					{
+						"node": "Check: Release: Get by URL",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Release: Get by URL": {
+			"main": [
+				[
+					{
+						"node": "Wait before Release: Search",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Release: Get by URL",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Release: Search": {
+			"main": [
+				[
+					{
+						"node": "Release: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Release: Search": {
+			"main": [
+				[
+					{
+						"node": "Check: Release: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Release: Search": {
+			"main": [
+				[
+					{
+						"node": "Wait before Master: Get by ID",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Release: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Master: Get by ID": {
+			"main": [
+				[
+					{
+						"node": "Master: Get by ID",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Master: Get by ID": {
+			"main": [
+				[
+					{
+						"node": "Check: Master: Get by ID",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Master: Get by ID": {
+			"main": [
+				[
+					{
+						"node": "Wait before Master: Get Versions",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Master: Get by ID",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Master: Get Versions": {
+			"main": [
+				[
+					{
+						"node": "Master: Get Versions",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Master: Get Versions": {
+			"main": [
+				[
+					{
+						"node": "Check: Master: Get Versions",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Master: Get Versions": {
+			"main": [
+				[
+					{
+						"node": "Wait before Master: Search",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Master: Get Versions",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Master: Search": {
+			"main": [
+				[
+					{
+						"node": "Master: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Master: Search": {
+			"main": [
+				[
+					{
+						"node": "Check: Master: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Master: Search": {
+			"main": [
+				[
+					{
+						"node": "Wait before Artist: Get by URL",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Master: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Artist: Get by URL": {
+			"main": [
+				[
+					{
+						"node": "Artist: Get by URL",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Artist: Get by URL": {
+			"main": [
+				[
+					{
+						"node": "Check: Artist: Get by URL",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Artist: Get by URL": {
+			"main": [
+				[
+					{
+						"node": "Wait before Artist: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Artist: Get by URL",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Artist: Get Releases": {
+			"main": [
+				[
+					{
+						"node": "Artist: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Artist: Get Releases": {
+			"main": [
+				[
+					{
+						"node": "Check: Artist: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Artist: Get Releases": {
+			"main": [
+				[
+					{
+						"node": "Wait before Artist: Search",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Artist: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Artist: Search": {
+			"main": [
+				[
+					{
+						"node": "Artist: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Artist: Search": {
+			"main": [
+				[
+					{
+						"node": "Check: Artist: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Artist: Search": {
+			"main": [
+				[
+					{
+						"node": "Wait before Label: Get",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Artist: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Label: Get": {
+			"main": [
+				[
+					{
+						"node": "Label: Get",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Label: Get": {
+			"main": [
+				[
+					{
+						"node": "Check: Label: Get",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Label: Get": {
+			"main": [
+				[
+					{
+						"node": "Wait before Label: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Label: Get",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Label: Get Releases": {
+			"main": [
+				[
+					{
+						"node": "Label: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Label: Get Releases": {
+			"main": [
+				[
+					{
+						"node": "Check: Label: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Label: Get Releases": {
+			"main": [
+				[
+					{
+						"node": "Wait before Label: Search",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Label: Get Releases",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Label: Search": {
+			"main": [
+				[
+					{
+						"node": "Label: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Label: Search": {
+			"main": [
+				[
+					{
+						"node": "Check: Label: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Label: Search": {
+			"main": [
+				[
+					{
+						"node": "Wait before Marketplace: Release Stats",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Failed: Label: Search",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Wait before Marketplace: Release Stats": {
+			"main": [
+				[
+					{
+						"node": "Marketplace: Release Stats",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Marketplace: Release Stats": {
+			"main": [
+				[
+					{
+						"node": "Check: Marketplace: Release Stats",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Check: Marketplace: Release Stats": {
+			"main": [
+				[],
+				[
+					{
+						"node": "Failed: Marketplace: Release Stats",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"settings": {}
+}
