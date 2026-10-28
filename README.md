@@ -110,6 +110,12 @@ Read-only on purpose: database lookups and marketplace statistics. Your
 collection and wantlist aren't covered yet; reading them would be the next
 step, and writes (adding to the wantlist) would need a deliberate decision.
 
+### Releasing
+
+`npm version patch` (or `minor`/`major`), then `git push --follow-tags`. The
+tag starts `.github/workflows/publish.yml`, which lints, builds, tests and
+publishes to npm with a provenance statement.
+
 ## License
 
 MIT
